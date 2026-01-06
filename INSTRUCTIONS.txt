@@ -1,7 +1,0 @@
-1. You will need Unity Hub and Unity version 6000.2.1f1
-2. In Unity Hub > Projects > Add > Add project from disk >
-Highlight the ClickCore folder > Open
-3. If SampleScene does not open in the heirarchy automatically,
-find and double click on SampleScene in the Project tab of the
-Unity Editor.
-4. Press the play button at the top of the screen to run the scene
