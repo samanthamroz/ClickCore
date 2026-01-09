@@ -7,7 +7,14 @@ namespace ClickIt.Editor
     public class ClickItIconSetter
     {
         private static bool hasSetIcons = false;
+        private static readonly string componentIconFilePath = "Assets/ClickIt!/Backend/Editor/ClickItIcon.png";
+        private static readonly string[] componentFilePaths = {
+            "Assets/ClickIt!/Components/BasicClickableObject.cs",
+            "Assets/ClickIt!/Components/BasicReleaseableObject.cs",
+            "Assets/ClickIt!/Components/BasicClickAwayObject.cs"
+        };
 
+        
         static ClickItIconSetter()
         {
             if (hasSetIcons) return;
@@ -19,72 +26,24 @@ namespace ClickIt.Editor
         {
             if (hasSetIcons) return;
 
-            // Load your custom icon
-            Texture2D icon = AssetDatabase.LoadAssetAtPath<Texture2D>(
-                "Assets/ClickIt!/Backend/Editor/ClickItIcon.png"
-            );
-
+            Texture2D icon = AssetDatabase.LoadAssetAtPath<Texture2D>(componentIconFilePath);
             if (icon == null) {
-                Debug.LogWarning("ClickIt: Could not find icon at Assets/ClickIt!/Editor/ClickItIcon.jpg");
+                Debug.LogWarning($"ClickIt: Could not find component icon at {componentIconFilePath}");
                 return;
             }
             
-            // Get the script
-            var script = AssetDatabase.LoadAssetAtPath<MonoScript>(
-                "Assets/ClickIt!/Components/ClickIt_ClickableObject.cs"
-            );
+            foreach (var filePath in componentFilePaths) {
+                var script = AssetDatabase.LoadAssetAtPath<MonoScript>(filePath);
+                if (script == null) {
+                    Debug.LogWarning($"ClickIt: Could not find component script at {filePath}");
+                    continue;
+                }
 
-            if (script == null) {
-                Debug.LogWarning("ClickIt: Could not find script at Assets/ClickIt!/Components/ClickIt_ClickableObject.cs");
-            }
-            
-            MonoImporter importer = (MonoImporter)AssetImporter.GetAtPath(
-                AssetDatabase.GetAssetPath(script)
-            );
-                    
-            // Only set if different to avoid infinite loop
-            if (importer.GetIcon() != icon)
-            {
-                importer.SetIcon(icon);
-                importer.SaveAndReimport();
-            }
-
-            script = AssetDatabase.LoadAssetAtPath<MonoScript>(
-                "Assets/ClickIt!/Components/ClickIt_ReleaseableObject.cs"
-            );
-
-            if (script == null) {
-                Debug.LogWarning("ClickIt: Could not find script at Assets/ClickIt!/Components/ClickIt_ReleaseableObject.cs");
-            }
-            
-            importer = (MonoImporter)AssetImporter.GetAtPath(
-                AssetDatabase.GetAssetPath(script)
-            );
-                    
-            // Only set if different to avoid infinite loop
-            if (importer.GetIcon() != icon)
-            {
-                importer.SetIcon(icon);
-                importer.SaveAndReimport();
-            }
-
-            script = AssetDatabase.LoadAssetAtPath<MonoScript>(
-                "Assets/ClickIt!/Components/ClickIt_ClickAwayObject.cs"
-            );
-
-            if (script == null) {
-                Debug.LogWarning("ClickIt: Could not find script at Assets/ClickIt!/Components/ClickIt_ClickAwayObject.cs");
-            }
-            
-            importer = (MonoImporter)AssetImporter.GetAtPath(
-                AssetDatabase.GetAssetPath(script)
-            );
-                    
-            // Only set if different to avoid infinite loop
-            if (importer.GetIcon() != icon)
-            {
-                importer.SetIcon(icon);
-                importer.SaveAndReimport();
+                MonoImporter importer = (MonoImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(script));
+                if (importer.GetIcon() != icon) {
+                    importer.SetIcon(icon);
+                    importer.SaveAndReimport();
+                }
             }
                     
             hasSetIcons = true;
